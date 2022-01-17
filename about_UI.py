@@ -22,7 +22,7 @@ label1.place(x=10, y=85)
 
 
 # Image 2
-image2 = Image.open("FingerImages/2.png")
+image2 = Image.open("FingerImages/2.jpg")
 resize_image2 = image2.resize((100, 100))
 test2 = ImageTk.PhotoImage(resize_image2)
 
