@@ -2,6 +2,9 @@ import cv2
 import time
 import os
 import HandTrackingModule as htm
+from Mail_UI import MAIL
+from Sender_Info_UI import LOGIN
+from about_UI import ABOUT
 
 wCam, hCam = 640, 480
 
@@ -25,20 +28,20 @@ while True:
     success, img = cap.read()
     img = detector.findHands(img)
     lmList = detector.findPosition(img, draw=False)
-    # print(lmList)
+    print(lmList)
 
     if len(lmList) != 0:
         fingers = []
 
         # Thumb
-        if lmList[tipIds[0]][1] > lmList[tipIds[0]-1][1]:
+        if lmList[tipIds[0]][1] > lmList[tipIds[0] - 1][1]:
             fingers.append(1)
         else:
             fingers.append(0)
 
         # 4 Fingers
         for id in range(1, 5):
-            if lmList[tipIds[id]][2] < lmList[tipIds[id]-2][2]:
+            if lmList[tipIds[id]][2] < lmList[tipIds[id] - 2][2]:
                 fingers.append(1)
             else:
                 fingers.append(0)
@@ -46,6 +49,18 @@ while True:
         # print(fingers)
         totalFingers = fingers.count(1)
         print(totalFingers)
+
+        if totalFingers == 1:
+            LOGIN()
+
+        elif totalFingers == 2:
+            MAIL()
+
+            if totalFingers == 3:
+                LOGIN.onLogin()
+
+        elif totalFingers == 4:
+            ABOUT()
 
         cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
         cv2.putText(img, str(totalFingers), (45, 375), cv2.FONT_HERSHEY_PLAIN,
@@ -59,4 +74,6 @@ while True:
                 3, (255, 0, 0), 3)
 
     cv2.imshow("Image", img)
-    cv2.waitKey(1)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
