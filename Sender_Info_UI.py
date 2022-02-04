@@ -3,7 +3,8 @@ from tkinter import *
 
 class LOGIN:
 
-    def __init__(self):
+    def __init__(self, server):
+        self.server = server
         bg = "#BFD3D6"
         master = Tk()
         master.geometry('500x250')
@@ -22,9 +23,10 @@ class LOGIN:
         password = Entry(master, width=30, borderwidth=2, font=('Calibri', 15))
         password.place(x=155, y=135)
 
-        login = Button(master, text="Login", width=10, font=('Calibri', 13), command=self.onLogin).place(x=245, y=195)
+        login = Button(master, text="Login", width=10, font=('Calibri', 13),
+                       command=lambda: self.onLogin(email, password)).place(x=245, y=195)
         master.mainloop()
+        return email
 
-    @staticmethod
-    def onLogin():
-        print('You are logged in')
+    def onLogin(self, email, password):
+        self.server.login(email, password)

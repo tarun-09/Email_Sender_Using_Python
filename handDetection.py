@@ -5,75 +5,110 @@ import HandTrackingModule as htm
 from Mail_UI import MAIL
 from Sender_Info_UI import LOGIN
 from about_UI import ABOUT
+import smtplib
 
-wCam, hCam = 640, 480
+server = smtplib.SMTP('smtp.gmail.com', 587)
+server.starttls()
 
-cap = cv2.VideoCapture(0)
-cap.set(3, wCam)
-cap.set(4, hCam)
 
-folderPath = "FingerImages"
-myList = os.listdir(folderPath)
-print(myList)
-for imPath in myList:
-    image = cv2.imread(f'{folderPath}/{imPath}')
-    # print(f'{folderPath}/{imPath}')
-pTime = 0
+class FingerDetection:
+    global email
+    global tuple
 
-detector = htm.handDetector(detectionCon=0.75)
+    email=""
+    tuple=()
 
-tipIds = [4, 8, 12, 16, 20]
+    def __init__(self):
 
-while True:
-    success, img = cap.read()
-    img = detector.findHands(img)
-    lmList = detector.findPosition(img, draw=False)
-    print(lmList)
+        wCam, hCam = 640, 480
 
-    if len(lmList) != 0:
-        fingers = []
+        cap = cv2.VideoCapture(0)
+        cap.set(3, wCam)
+        cap.set(4, hCam)
 
-        # Thumb
-        if lmList[tipIds[0]][1] > lmList[tipIds[0] - 1][1]:
-            fingers.append(1)
-        else:
-            fingers.append(0)
+        folderPath = "FingerImages"
+        myList = os.listdir(folderPath)
+        print(myList)
+        for imPath in myList:
+            image = cv2.imread(f'{folderPath}/{imPath}')
+        # print(f'{folderPath}/{imPath}')
+        pTime = 0
 
-        # 4 Fingers
-        for id in range(1, 5):
-            if lmList[tipIds[id]][2] < lmList[tipIds[id] - 2][2]:
-                fingers.append(1)
-            else:
-                fingers.append(0)
+        detector = htm.handDetector(detectionCon=0.75)
 
-        # print(fingers)
-        totalFingers = fingers.count(1)
-        print(totalFingers)
+        tipIds = [4, 8, 12, 16, 20]
+        totalFingers = 0
+        res = True
+        while res:
+            success, img = cap.read()
+            img = detector.findHands(img)
+            lmList = detector.findPosition(img, draw=False)
+            print(lmList)
 
-        if totalFingers == 1:
-            LOGIN()
+            if len(lmList) != 0:
+                fingers = []
 
-        elif totalFingers == 2:
-            MAIL()
+                # Thumb
+                if lmList[tipIds[0]][1] > lmList[tipIds[0] - 1][1]:
+                    fingers.append(1)
+                else:
+                    fingers.append(0)
 
-            if totalFingers == 3:
-                LOGIN.onLogin()
+                # 4 Fingers
+                for id in range(1, 5):
+                    if lmList[tipIds[id]][2] < lmList[tipIds[id] - 2][2]:
+                        fingers.append(1)
+                    else:
+                        fingers.append(0)
 
-        elif totalFingers == 4:
-            ABOUT()
+                # print(fingers)
+                totalFingers = fingers.count(1)
+                print(totalFingers)
 
-        cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
-        cv2.putText(img, str(totalFingers), (45, 375), cv2.FONT_HERSHEY_PLAIN,
-                    10, (255, 0, 0), 25)
+                if totalFingers == 1:
+                    res = False
+                    break
 
-    cTime = time.time()
-    fps = 1 / (cTime - pTime)
-    pTime = cTime
+                elif totalFingers == 2:
+                    res = False
+                    break
 
-    cv2.putText(img, f'FPS: {int(fps)}', (400, 70), cv2.FONT_HERSHEY_PLAIN,
-                3, (255, 0, 0), 3)
+                elif totalFingers == 3:
+                    res = False
+                    break
 
-    cv2.imshow("Image", img)
+                elif totalFingers == 4:
+                    res = False
+                    break
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+                cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
+                cv2.putText(img, str(totalFingers), (45, 375), cv2.FONT_HERSHEY_PLAIN,
+                            10, (255, 0, 0), 25)
+
+            cTime = time.time()
+            fps = 1 / (cTime - pTime)
+            pTime = cTime
+
+            cv2.putText(img, f'FPS: {int(fps)}', (400, 70), cv2.FONT_HERSHEY_PLAIN,
+                        3, (255, 0, 0), 3)
+            if res:
+                cv2.imshow("Image", img)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        cv2.destroyAllWindows()
+        cap.release()
+
+        if not res:
+            if totalFingers == 1:
+                email = LOGIN(server)
+
+            elif totalFingers == 2:
+                tuple = MAIL()
+
+            elif totalFingers == 3:
+                MAIL.onSend(server, email, tuple)
+
+            elif totalFingers == 4:
+                ABOUT()

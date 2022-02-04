@@ -1,22 +1,21 @@
-import os
 import smtplib
+from email.message import EmailMessage
 
-EMAIL_ADDRESS = os.environ.get('EMAIL_USER')
-EMAIL_PASSWORD = os.environ.get('EMAIL_PASS')
 
-print(EMAIL_ADDRESS)
-print(EMAIL_PASSWORD)
-with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-    smtp.ehlo()
-    smtp.starttls()
-    smtp.ehlo()
+class SENDING_MAIL:
+    def __init__(self):
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        return server
 
-    smtp.login(EMAIL_ADDRESS,EMAIL_PASSWORD)
+    def onLogin(self, server, email, password):
+        server.login(email, password)
+        return server
 
-    subject = 'Invitation for dinner'
-    body = 'I would like to invite you for dinner at my home at 7 pm today.'
-
-    msg = f'Subject:{subject}\n\n{body}'
-
-    smtp.sendmail('tarunagrawalgarg@gmail.com', 'tarun.agrawal_cs.aiml19@gla.ac.in', msg)
-
+    def onSend(self, server, user, to, subject, body):
+        email = EmailMessage()
+        email['From'] = user
+        email['To'] = to
+        email['Subject'] = subject
+        email.set_content(body)
+        server.send_message(email)
