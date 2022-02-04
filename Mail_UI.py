@@ -1,4 +1,5 @@
 from tkinter import *
+from email.message import EmailMessage
 
 
 class MAIL:
@@ -12,13 +13,14 @@ class MAIL:
         master.title("Email App")
 
         # Graphics
-        titleLabel = Label(master, text="Email App", width=20, bg=bg, fg="#100A2D", font=('Calibri', 20)).place(x=100, y=10)
+        titleLabel = Label(master, text="Email App", width=20, bg=bg, fg="#100A2D", font=('Calibri', 20)).place(x=100,
+                                                                                                                y=10)
 
         Label(master, text="Compose Your E-mail", width=30, bg=bg, font=('Calibri', 15)).place(x=90, y=50)
 
         Label(master, text="To", bg=bg, font=('Calibri', 15)).place(x=30, y=85)
-        user = Entry(master, width=30, borderwidth=2, font=('Calibri', 15))
-        user.place(x=155, y=85)
+        to = Entry(master, width=30, borderwidth=2, font=('Calibri', 15))
+        to.place(x=155, y=85)
 
         Label(master, text="Subject", bg=bg, font=('Calibri', 15)).place(x=30, y=135)
         subject = Entry(master, width=30, borderwidth=2, font=('Calibri', 15))
@@ -27,12 +29,17 @@ class MAIL:
         Label(master, text="Message", bg=bg, font=('Calibri', 15)).place(x=30, y=185)
         body = Text(master, width=30, height=10, borderwidth=2, font=('Calibri', 15))
         body.place(x=155, y=185)
-        send = Button(master, text="Send", width=10, font=('Calibri', 13), command=self.onSend).place(x=245, y=455)
+        check = Button(master, text="Check", width=10, font=('Calibri', 13)).place(x=245, y=455)
 
         master.mainloop()
+        list = (to, subject, body)
+        return list
 
-    @staticmethod
-    def onSend():
-        print(f'You have sent mail')
-
-
+    def onSend(self, server, email, to, subject, body):
+        email = EmailMessage()
+        email['From'] = email
+        email['To'] = to
+        email['Subject'] = subject
+        email.set_content(body)
+        server.send_message(email)
+        print("SEND")
