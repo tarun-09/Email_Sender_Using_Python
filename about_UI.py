@@ -23,7 +23,11 @@ class ABOUT:
         label1.image = test1
         label1.place(x=10, y=85)
 
-        Label(master, text="SHOW 1", bg=bg, font=('Times New Roman', 17)).place(x=130, y=85)
+
+        # Info 1
+        Label(master,
+              text="Show 1 to open Login Info dialog box.\n This Dialog Box will facilitate the user to\n enter its Login Credentials.",
+              width=46, height=5, font=('Calibri', 12)).place(x=120, y=87)
 
         # Image 2
         image2 = Image.open("FingerImages/2.jpg")
@@ -34,7 +38,11 @@ class ABOUT:
         label2.image = test2
         label2.place(x=10, y=205)
 
-        Label(master, text="SHOW 2", bg=bg, font=('Times New Roman', 17)).place(x=130, y=205)
+
+        # Info 2
+        Label(master,
+              text="Show 2 to open Email Compose dialog box.\n This Dialog Box will facilitate the user to\n compose Email.",
+              width=46, height=5, font=('Calibri', 12)).place(x=120, y=207)
 
         # Image 3
         image3 = Image.open("FingerImages/3.png")
@@ -45,7 +53,11 @@ class ABOUT:
         label3.image = test3
         label3.place(x=10, y=325)
 
-        Label(master, text="SHOW 3", bg=bg, font=('Times New Roman', 17)).place(x=130, y=325)
+
+        # Info 3
+        Label(master,
+              text="Show 3 to send email to the destine.\n This Dialog Box will facilitate the user to\n compose Email.",
+              width=46, height=5, font=('Calibri', 12)).place(x=120, y=327)
 
         # Image 4
         image4 = Image.open("FingerImages/4.png")
@@ -56,6 +68,17 @@ class ABOUT:
         label4.image = test4
         label4.place(x=10, y=445)
 
-        Label(master, text="SHOW 4", bg=bg, font=('Times New Roman', 17)).place(x=130, y=445)
+        Label(master,
+              text="Show 4 to open About Info dialog box.\n This Dialog box will display the rules\n to run this application.",
+              width=46, height=5, font=('Calibri', 12)).place(x=120, y=447)
+
 
         master.mainloop()
+
+
+
+
+
+
+
+
